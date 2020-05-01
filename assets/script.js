@@ -1,74 +1,175 @@
-$(document).ready(function () {
-    $(".quiz-body").append(`    
-        <div class="start">
-            <h1 class="text-center">Code Quiz!</h1>
-            <p class="question text-center">Are you Ready?</p>
-            <div class="row">
-                <div class="col-md-4 float-left"></div>
-                <button type="button" class="btn btn-success btn-lg col-md-4 next">Start Quiz!</button>
-                <div class="col-md-4 float-right"></div>
-            </div>
-        </div>
-`);
-    $(".next").on('click', function () {
-        $(this).closest("div.start").remove();
-        startCountDown();
-        question1();
-        alert("it clicked!");
-    });
-
-    var question1 = function () {
-        $(".quiz-body").append(`
-        <h1 class="text-center">Question #1</h1>
-        <p class="question text-center">What are the two parts of an Array?</p>
-
-        
-        <input type="radio" id="ans1" name="question" value="0">
-        <label for="ans1">interger and number</label><br>
-
-        <input type="radio" id="ans2" name="question" value="0">
-        <label for="ans2">value and number</label><br>  
-
-        <input type="radio" id="ans3" name="question" value="0">
-        <label for="ans3">verticle and numerator</label><br> 
-
-        <input type="radio" id="ans4" name="question" value="1">
-        <label for="male">value and index</label><br>
-
-        <button type="button" class="btn btn-success check">Check Answer</button>
-
-        
-    `);
-    }
-// create function to check answer with button. If else, if true alert yay nextquestion if false minus time
-
-    
-
-    var checkAnswer = function(){
-       var checkQuestion = $('input[name ="question"]');
-       for(i = 0; i < checkQuestion.length; i++) {
-           if(checkQuestion[i].checked){
-               console.log(checkQuestion[i]);
-           }
-       }
-    
-}
-$(".check").on('click', checkAnswer());
-
-
-    function startCountDown() {
-        var time = 300;
-        var interval = setInterval(function () {
-            time -= 1;
-            if (time >= 0) {
-                var minutes = Math.floor(time / 60);
-                var seconds = time - (minutes * 60);
-                var display = minutes + ' : ' + seconds;
-                $("#timer").html('Timer : ' + display);
+// $(document).ready(function () {
+    // $(".next").on('click', function () {
+    //     $(this).closest("div.start").remove();
+    //     startCountDown();
+    //     writeQuiz();
+    // });
+//This function is functional
+    var writeQuiz = function () {
+        var output = [];
+        myQuestions.forEach((currentQuestion, questionNumber) => {
+            var answers = [];
+            for (letter in currentQuestion.answers) {
+                answers.push(
+                    `<label>
+                        <input type="radio" name="question${questionNumber}" value="${letter}">
+                        ${letter} :
+                        ${currentQuestion.answers[letter]}
+                    </label>`
+                );
             }
-            else {
-                clearInterval(interval);
-            }
-        }, 1000);
+            output.push(
+                `<div class="question"> ${currentQuestion.question} </div>
+                 <div class="answers"> ${answers.join('')} </div>`
+            );
+        
+        }
+        );
+        $("#quiz").html(tostring);
     }
-});
+
+    // var showResults = function(){
+    //     var answerContainers = quizContainer.querySelectorAll('.answers');
+    //     var numCorrect = 0;
+    //     myQuestions.forEach( (currentQuestion, questionNumber) => {
+    //         var answerContainer = answerContainers[questionNumber];
+    //         var selector = `input[name=question${questionNumber}]:checked`;
+    //         var userAnswer = (answerContainer.querySelector(selector) || {}).value;
+    //         if(userAnswer === currentQuestion.correctAnswer){
+    //             numCorrect++;
+    //             answerContainers[questionNumber].style.color = 'green';
+    //         }else {
+    //             answerContainers[questionNumber].style.color = 'red';
+    //         }
+    //     });
+    //     resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
+    // }
+
+    // var quizContainer = $("#quiz");
+    // var resultsContainer = document.getElementById('results');
+    var submitButton = document.getElementById('submit');
+
+    //This array is read clearly through the writeQuiz function.
+    var myQuestions = [
+        {
+            question: "Who invented JavaScript?",
+            answers: {
+                a: "Douglas Crockford",
+                b: "Sheryl Sandberg",
+                c: "Brendan Eich",
+                d: "All of the above"
+            },
+            correctAnswer: "c"
+        },
+        {
+            question: "What are the parts of an array?",
+            answers: {
+                a: "interger and number",
+                b: "value and element",
+                c: "verticle and numerator",
+                d: "value and index"
+            },
+            correctAnswer: "d"
+        },
+        {
+            question: "Which one of these is a JavaScript package manager?",
+            answers: {
+                a: "Node.js",
+                b: "TypeScript",
+                c: "npm",
+                d: "All of the above"
+            },
+            correctAnswer: "c"
+        },
+        {
+            question: "JavaScript and Java are the exact same thing.",
+            answers: {
+                a: "True",
+                b: "False",
+                c: "Maybe?",
+                d: "All of the above"
+            },
+            correctAnswer: "b"
+        },
+        {
+            question: "How much time was take to write the JavaScript programming language?",
+            answers: {
+                a: "5 years",
+                b: "9 months",
+                c: "10 days",
+                d: "7 weeks"
+            },
+            correctAnswer: "c"
+        },
+        {
+            question: "Which tool can you use to ensure code quality?",
+            answers: {
+                a: "Angular",
+                b: "jQuery",
+                c: "RequireJS",
+                d: "ESLint"
+            },
+            correctAnswer: "d"
+        },
+        {
+            question: "What are the parts of an array?",
+            answers: {
+                a: "interger and number",
+                b: "value and element",
+                c: "verticle and numerator",
+                d: "value and index"
+            },
+            correctAnswer: "d"
+        },
+        {
+            question: "What is the proper way to call a function?",
+            answers: {
+                a: "var = function(){ does something}",
+                b: "Hello? is this function?",
+                c: "nameOfFunction();",
+                d: "function === run"
+            },
+            correctAnswer: "c"
+        },
+        {
+            question: "Which tool can you use to ensure code quality?",
+            answers: {
+                a: "Angular",
+                b: "jQuery",
+                c: "RequireJS",
+                d: "ESLint"
+            },
+            correctAnswer: "d"
+        },
+        {
+            question: "Can a function be called within a funtion?",
+            answers: {
+                a: "No, it's illegal",
+                b: "Yes!",
+                c: "Only if you write the function within the funtion aka FuncCeption",
+                d: "All of the above"
+            },
+            correctAnswer: "b"
+        },
+    ];
+
+    writeQuiz();
+
+    // submitButton.addEventListener('click', showResults);
+    
+    // function startCountDown() {
+    //     var time = 300;
+    //     var interval = setInterval(function () {
+    //         time -= 1;
+    //         if (time >= 0) {
+    //             var minutes = Math.floor(time / 60);
+    //             var seconds = time - (minutes * 60);
+    //             var display = 'minutes: ' + minutes + ' seconds: ' + seconds;
+    //             $("#timer").html('Timer : ' + display);
+    //         }
+    //         else {
+    //             clearInterval(interval);
+    //         }
+    //     }, 1000);
+    // }
+// });
