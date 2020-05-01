@@ -7,32 +7,37 @@ var writeQuestion = function(){
         `<h2 class="question">${myQuestions[questionNum].question} </h2>
          <div class="answers">
             <label>
-                <input type="radio" name="question${questionNum}" value="a">A: ${myQuestions[questionNum].answers.a}
+                <input type="radio" name="question" value="a">A: ${myQuestions[questionNum].answers.a}
             </label><br>
             <label>
-                <input type="radio" name="question${questionNum}" value="b">B: ${myQuestions[questionNum].answers.b}
+                <input type="radio" name="question" value="b">B: ${myQuestions[questionNum].answers.b}
             </label><br>
             <label>
-                <input type="radio" name="question${questionNum}" value="c">C: ${myQuestions[questionNum].answers.c}
+                <input type="radio" name="question" value="c">C: ${myQuestions[questionNum].answers.c}
             </label><br>
             <label>
-                <input type="radio" name="question${questionNum}" value="d">D: ${myQuestions[questionNum].answers.d}
-            </label><br>`
+                <input type="radio" name="question" value="d">D: ${myQuestions[questionNum].answers.d}
+            </label><br>
+        <button id="check">Check answer</button>`
     )}else{
         alert("all done!")
     }
+    // When the user clicks on the input the check function should run. 
+    //Correct answer gives Yay! you are correct + 3 seconds, wrong answer sorry - 10 seconds
+    $("input[type='radio']").click(function(){
+        alert('you clicked a radio!');
+    }); 
   questionNum++;
   console.log(questionNum);
 }
-//how to check if the radio selected value is equal === to myQuestions[questionNum].correctAnswer  
+
+
 
 var nextQuestion = function(){
     $(".question").remove();
     $(".answers").remove();
 
 } 
-
-
 
 var myQuestions = [
     {
@@ -138,9 +143,15 @@ var myQuestions = [
 ];
 
 
+
 $("#submit").on('click', function(){
     nextQuestion();
     writeQuestion();
+});
+
+
+$("input[type='radio']").click(function(){
+    alert('you clicked a radio!');
 });
 
 });
