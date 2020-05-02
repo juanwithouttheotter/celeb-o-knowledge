@@ -1,37 +1,49 @@
 $(document).ready(function () {
-    var time = 0;
     var questionNum = -1;
     var userPoints = 0;
+    var counter = 300;
+    $("#next").hide();
+    $("#submit").hide();
+    $("#quiz").append(`
+        <h2 class="question">Coding Quiz!</h2>
+        <div Class="answers">
+            <p>For this quiz expect the following:</p>
+            <ol>
+                <li>You will have 5 minutes to complete the coding quiz.</li>
+                <li>Once you click on an answer, you will not be able to change answers.</li>
+                <li>Your progress will be tracked at the top of the screen.</li>
+                <li>At the end of the quiz or if you run out of time you will receive and be able to record your results.</li>
+            </ol>
+            <p>Click the start button to begin</p>
+        </div>
+        `)
+
     var writeQuestion = function () {
         if (questionNum < 10) {
-            $("#quiz").append(
-                `<h2 class="question">${myQuestions[questionNum].question} </h2>
-         <div class="answers">
-            <label>
-                <input type="radio" name="question" value="a">A: ${myQuestions[questionNum].answers.a}
-            </label><br>
-            <label>
-                <input type="radio" name="question" value="b">B: ${myQuestions[questionNum].answers.b}
-            </label><br>
-            <label>
-                <input type="radio" name="question" value="c">C: ${myQuestions[questionNum].answers.c}
-            </label><br>
-            <label>
-                <input type="radio" name="question" value="d">D: ${myQuestions[questionNum].answers.d}
-            </label><br>`
+            $("#quiz").append(`
+                <h2 class="question">${myQuestions[questionNum].question} </h2>
+                <div class="answers">
+                    <label>
+                        <input type="radio" name="question" value="a">A: ${myQuestions[questionNum].answers.a}
+                    </label><br>
+                    <label>
+                        <input type="radio" name="question" value="b">B: ${myQuestions[questionNum].answers.b}
+                    </label><br>
+                    <label>
+                        <input type="radio" name="question" value="c">C: ${myQuestions[questionNum].answers.c}
+                    </label><br>
+                    <label>
+                        <input type="radio" name="question" value="d">D: ${myQuestions[questionNum].answers.d}
+                    </label><br>
+                </div>`
             )
         } else {
             alert("all done!")
         }
-        // When the user clicks on the input the check function should run. 
-        //Correct answer gives Yay! you are correct + 3 seconds, wrong answer sorry - 10 seconds
         $("input[type='radio']").click(function () {
             $('input[name="question"]:not(:checked)').attr("disabled", true);
             checkAnswer();
-            
         });
-
-        console.log(questionNum);
     }
 
     var checkAnswer = function () {
@@ -39,32 +51,42 @@ $(document).ready(function () {
         var correctAnswer = myQuestions[questionNum].correctAnswer;
         if (userAnswer === correctAnswer) {
             userPoints++;
-            console.log(userPoints);
+            $("#user-score").html('Your Score: ' + userPoints);
             $("#results").append(`<div class="response"> ${myQuestions[questionNum].cheer}</div>`);
-            
-
-            
         } else {
+            counter -= 15;
             $("#results").append(`<div class="response"> ${myQuestions[questionNum].motivation}</div>`);
+
         }
     }
+    //delegate will look let a click happen inside of something that is gettin appended. this may help
 
-    function startCountDown(time) {
-        time = 300;
-        var interval = setInterval(function () {
-            time -= 1;
-            if (time >= 0) {
-                var minutes = Math.floor(time / 60);
-                var seconds = time - (minutes * 60);
-                var display = 'minutes: ' + minutes + ' seconds: ' + seconds;
-                $("#timer").html('Timer : ' + display);
-            }
-            else {
-                clearInterval(interval);
+   
+    //when timer runs out || questions are answered End screen. 
+    //game ends take user input and record score it Score div
+
+    //is there wa way to display single digits as 00
+
+    var countdownTimer = function () {
+        const intervalId = setInterval(() => {
+            var minutes = Math.floor(counter / 60);
+            var seconds = counter - (minutes * 60);
+            var time = minutes + ":" + seconds;
+            counter -= 1;
+
+            //   if (counter > 250) {
+            //    counter -= 10;
+            //   }
+            //   if (counter === 20) {
+            //     counter += 17;
+            //   }
+            if (counter >= 0) {
+                $("#timer").html('Timer : ' + time);
+            } else {
+                clearInterval(intervalId);
             }
         }, 1000);
     }
-
 
     var nextQuestion = function () {
         $(".question").remove();
@@ -196,14 +218,23 @@ $(document).ready(function () {
         },
     ];
 
+    //rename this click to start then hide
 
-    $("#submit").on('click', function() {
-        startCountDown();
+    $("#start").on('click', function () {
+        $("#next").show();
+        $("#start").hide();
+        nextQuestion();
+        writeQuestion();
+        countdownTimer();
         
     });
     $("#next").on('click', function () {
         nextQuestion();
         writeQuestion();
-        $("#user-score").html('Your Score: ' + userPoints)
+
+    });
+    $("#submit").on('click', function () {
+
+
     });
 });
