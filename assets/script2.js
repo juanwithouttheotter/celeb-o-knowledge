@@ -1,6 +1,7 @@
 $(document).ready(function () {
-    //use the shopping list info to create the the local storage for the top scores. 
-    //as well as append the previouse scores
+  // update boostrap to make more responsive, 
+  // add text to the Scoreboard to ask user if they would like to try again.
+
     var questionNum = -1;
     var userPoints = 0;
     var counter = 180;
@@ -38,10 +39,12 @@ $(document).ready(function () {
                 clearInterval(intervalId);
                 console.log('time has stopped');
             }
-            if (counter >= -1) {
+            if (counter > -1) {
                 $("#timer").html('Timer : ' + time);
             } else {
+                $("#timer").html('Timer : ' + time);
                 clearInterval(intervalId);
+                nextQuestion();
             }
         }, 1000);
     }
@@ -94,7 +97,7 @@ $(document).ready(function () {
         clearpage();
         questionNum++;
         console.log(questionNum);
-        if (questionNum >= 10 || counter === 0) {
+        if (questionNum >= 10 || counter <= 0) {
             $("#quiz").append(`
                 <div class="myScore">
                     <h2><u>Your score!</u></h2>
@@ -266,6 +269,7 @@ $(document).ready(function () {
         $("#user-score").html('Your Score: ' + userPoints);
         $("#next").show();
         $("#start").hide();
+        $("#view-scores").hide();
         nextQuestion();
         writeQuestion();
         countdownTimer();
@@ -279,6 +283,7 @@ $(document).ready(function () {
     $("#submit").on('click', function() {
         $("#start").show();
         $("#submit").hide();
+        $("#view-scores").show();
         endGame();
         //viewScores();
     });
