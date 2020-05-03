@@ -1,7 +1,8 @@
 $(document).ready(function () {
     var questionNum = -1;
     var userPoints = 0;
-    var counter = 300;
+    var counter = 180;
+    var topScores = [];
     $("#next").hide();
     $("#submit").hide();
     $("#quiz").append(`
@@ -17,7 +18,25 @@ $(document).ready(function () {
             <p>Click the start button to begin</p>
         </div>
         `)
-
+    //delegate will look let a click happen inside of something that is gettin appended. this may help
+    //is there wa way to display single digits as 00
+    var countdownTimer = function () {
+        const intervalId = setInterval(() => {
+            var minutes = Math.floor(counter / 60);
+            var seconds = counter - (minutes * 60);
+            var time = minutes + ":" + seconds;
+            counter -= 1;
+            if (questionNum > 9) {
+                clearInterval(intervalId);
+                console.log('time has stopped');
+            }
+            if (counter >= -1) {
+                $("#timer").html('Timer : ' + time);
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 1000);
+    }
     var writeQuestion = function () {
         if (questionNum < 10) {
             $("#quiz").append(`
@@ -36,16 +55,13 @@ $(document).ready(function () {
                         <input type="radio" name="question" value="d">D: ${myQuestions[questionNum].answers.d}
                     </label><br>
                 </div>`
-            )
-        } else {
-            alert("all done!")
+            );
         }
         $("input[type='radio']").click(function () {
             $('input[name="question"]:not(:checked)').attr("disabled", true);
             checkAnswer();
         });
     }
-
     var checkAnswer = function () {
         var userAnswer = $("input[name='question']:checked").val();
         var correctAnswer = myQuestions[questionNum].correctAnswer;
@@ -56,45 +72,25 @@ $(document).ready(function () {
         } else {
             counter -= 15;
             $("#results").append(`<div class="response"> ${myQuestions[questionNum].motivation}</div>`);
-
         }
     }
-    //delegate will look let a click happen inside of something that is gettin appended. this may help
-
-   
-    //when timer runs out || questions are answered End screen. 
-    //game ends take user input and record score it Score div
-
-    //is there wa way to display single digits as 00
-
-    var countdownTimer = function () {
-        const intervalId = setInterval(() => {
-            var minutes = Math.floor(counter / 60);
-            var seconds = counter - (minutes * 60);
-            var time = minutes + ":" + seconds;
-            counter -= 1;
-
-            //   if (counter > 250) {
-            //    counter -= 10;
-            //   }
-            //   if (counter === 20) {
-            //     counter += 17;
-            //   }
-            if (counter >= 0) {
-                $("#timer").html('Timer : ' + time);
-            } else {
-                clearInterval(intervalId);
-            }
-        }, 1000);
-    }
-
     var nextQuestion = function () {
         $(".question").remove();
         $(".answers").remove();
         $(".response").remove();
         questionNum++;
-
+        console.log(questionNum);
+        if (questionNum >= 10 || counter === 0) {
+            $("#results").append(`
+                <h2><u>Your score!</u></h2>
+                <div>${userPoints} /10 points </div>
+                <input type="text" id="initials"/>
+            `);
+            $("#submit").show();
+            $("#next").hide();
+        }
     }
+
     var myQuestions = [
         {
             question: "Who invented JavaScript?",
@@ -220,21 +216,30 @@ $(document).ready(function () {
 
     //rename this click to start then hide
 
-    $("#start").on('click', function () {
+    $("#start").on('click', function() {
         $("#next").show();
         $("#start").hide();
         nextQuestion();
         writeQuestion();
         countdownTimer();
-        
+
     });
-    $("#next").on('click', function () {
+    $("#next").on('click', function() {
         nextQuestion();
         writeQuestion();
 
     });
-    $("#submit").on('click', function () {
+    $("#submit").on('click', function() {
+        var initials = $("#results").find("input[id='initials']").val();
+        console.log(initials);
+        storePoints = userPoints + initials;
+        console.log(storePoints);
+        topScores.push(userPoints)
+        $('#results').find("input[id='initials']").val('');
 
 
+    });
+    $("#view-scores").on('click',function() {
+        console.log('it clicked!')
     });
 });
