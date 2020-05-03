@@ -1,8 +1,15 @@
 $(document).ready(function () {
+    //use the shopping list info to create the the local storage for the top scores. 
+    //as well as append the previouse scores
     var questionNum = -1;
     var userPoints = 0;
     var counter = 180;
-    var topScores = [];
+    if (localStorage.getItem('scores') !== null) {
+        var scores = JSON.parse(localStorage.getItem('scores'));
+        console.log('if conditional' + scores);
+    }else {
+        scores = [];
+    }
     $("#next").hide();
     $("#submit").hide();
     $("#quiz").append(`
@@ -24,9 +31,10 @@ $(document).ready(function () {
         const intervalId = setInterval(() => {
             var minutes = Math.floor(counter / 60);
             var seconds = counter - (minutes * 60);
-            var time = minutes + ":" + seconds;
+            var secondsClock = (seconds < 10 ? '0' : '') + seconds;
+            var time = minutes + ":" + secondsClock;
             counter -= 1;
-            if (questionNum > 9) {
+            if (questionNum >= myQuestions.length) {
                 clearInterval(intervalId);
                 console.log('time has stopped');
             }
@@ -38,7 +46,7 @@ $(document).ready(function () {
         }, 1000);
     }
     var writeQuestion = function () {
-        if (questionNum < 10) {
+        if (questionNum < myQuestions.length) {
             $("#quiz").append(`
                 <h2 class="question">${myQuestions[questionNum].question} </h2>
                 <div class="answers">
@@ -70,27 +78,65 @@ $(document).ready(function () {
             $("#user-score").html('Your Score: ' + userPoints);
             $("#results").append(`<div class="response"> ${myQuestions[questionNum].cheer}</div>`);
         } else {
+            $("#user-score").html('Your Score: ' + userPoints);
             counter -= 15;
             $("#results").append(`<div class="response"> ${myQuestions[questionNum].motivation}</div>`);
         }
     }
-    var nextQuestion = function () {
+    var clearpage = function() {
+        $(".scoreboard").remove();
         $(".question").remove();
         $(".answers").remove();
         $(".response").remove();
+        $(".myScore").remove();
+    }
+    var nextQuestion = function () {
+        clearpage();
         questionNum++;
         console.log(questionNum);
         if (questionNum >= 10 || counter === 0) {
-            $("#results").append(`
-                <h2><u>Your score!</u></h2>
-                <div>${userPoints} /10 points </div>
-                <input type="text" id="initials"/>
+            $("#quiz").append(`
+                <div class="myScore">
+                    <h2><u>Your score!</u></h2>
+                    <div>${userPoints} /10 points </div>
+                    <input type="text" id="initials"/>
+                </div>
             `);
             $("#submit").show();
             $("#next").hide();
         }
     }
+    var viewScores = function() {
+        clearpage();
+        $("#quiz").append(`
+            <div class="scoreboard">
+                <h2><u>Top Scores</u></h2>
+                <div class="top-scores"></div>
+            </div>
 
+        `);
+
+        for (player of scores) {
+            console.log(player + 'for loop in viewscores');
+            $(".scoreboard").find("div[class='top-scores']").append(`
+            <button type="button" class="btn btn-light" disabled>${player}</button>
+            `);
+        }
+    }
+    var endGame = function() {
+        
+        var initials = $(".myScore").find("input[id='initials']").val();
+        var storePoints = `player: ${initials} score: ${userPoints}`;
+        scores.push(storePoints);
+        localStorage.setItem('scores', JSON.stringify(scores));
+        console.log(scores);
+        $('.myScore').find("input[id='initials']").val('');
+        questionNum = -1;
+        userPoints = 0;
+        counter = 180;
+        viewScores();
+        //clearInterval(intervalId);
+    }
     var myQuestions = [
         {
             question: "Who invented JavaScript?",
@@ -217,6 +263,7 @@ $(document).ready(function () {
     //rename this click to start then hide
 
     $("#start").on('click', function() {
+        $("#user-score").html('Your Score: ' + userPoints);
         $("#next").show();
         $("#start").hide();
         nextQuestion();
@@ -230,16 +277,13 @@ $(document).ready(function () {
 
     });
     $("#submit").on('click', function() {
-        var initials = $("#results").find("input[id='initials']").val();
-        console.log(initials);
-        storePoints = userPoints + initials;
-        console.log(storePoints);
-        topScores.push(userPoints)
-        $('#results').find("input[id='initials']").val('');
-
-
+        $("#start").show();
+        $("#submit").hide();
+        endGame();
+        //viewScores();
     });
     $("#view-scores").on('click',function() {
         console.log('it clicked!')
+        viewScores();
     });
 });
