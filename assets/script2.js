@@ -14,16 +14,17 @@ $(document).ready(function () {
     $("#next").hide();
     $("#submit").hide();
     $("#quiz").append(`
-        <h2 class="question">Coding Quiz!</h2>
-        <div Class="answers">
-            <p>For this quiz expect the following:</p>
+        <h1 class="question row col-md-12 justify-content-center">Coding Quiz!</h1>
+        <div class="answers row mx-1 col-md-12 justify-content-center">
+            <div class="col-md-3></div>
+            <p class="row col-md-9">For this quiz expect the following:</p>
             <ol>
                 <li>You will have 5 minutes to complete the coding quiz.</li>
                 <li>Once you click on an answer, you will not be able to change answers.</li>
                 <li>Your progress will be tracked at the top of the screen.</li>
                 <li>At the end of the quiz or if you run out of time you will receive and be able to record your results.</li>
             </ol>
-            <p>Click the start button to begin</p>
+            <p class="row col-md-12 justify-content-center">Click the start button to begin</p>
         </div>
         `)
     //delegate will look let a click happen inside of something that is gettin appended. this may help
@@ -51,18 +52,18 @@ $(document).ready(function () {
     var writeQuestion = function () {
         if (questionNum < myQuestions.length) {
             $("#quiz").append(`
-                <h2 class="question">${myQuestions[questionNum].question} </h2>
-                <div class="answers">
-                    <label>
+                <h3 class="question row col-md-12 justify-content-center">${myQuestions[questionNum].question} </h3>
+                <div class="answers row mx-1 col-md-12 justify-content-left">
+                    <label class ="row col-md-12 text-center">
                         <input type="radio" name="question" value="a">A: ${myQuestions[questionNum].answers.a}
                     </label><br>
-                    <label>
+                    <label class ="row col-md-12 text-center">
                         <input type="radio" name="question" value="b">B: ${myQuestions[questionNum].answers.b}
                     </label><br>
-                    <label>
+                    <label class ="row col-md-12 text-center">
                         <input type="radio" name="question" value="c">C: ${myQuestions[questionNum].answers.c}
                     </label><br>
-                    <label>
+                    <label class ="row col-md-12 text-center">
                         <input type="radio" name="question" value="d">D: ${myQuestions[questionNum].answers.d}
                     </label><br>
                 </div>`
@@ -79,7 +80,7 @@ $(document).ready(function () {
         if (userAnswer === correctAnswer) {
             userPoints++;
             $("#user-score").html('Your Score: ' + userPoints);
-            $("#results").append(`<div class="response"> ${myQuestions[questionNum].cheer}</div>`);
+            $("#results").append(`<div class="response justify-content-center"> ${myQuestions[questionNum].cheer}</div>`);
         } else {
             $("#user-score").html('Your Score: ' + userPoints);
             counter -= 15;
@@ -112,8 +113,10 @@ $(document).ready(function () {
     var viewScores = function() {
         clearpage();
         $("#quiz").append(`
-            <div class="scoreboard">
-                <h2><u>Top Scores</u></h2>
+            <div class="scoreboard col-md-4">
+                <h2 class="row justify-content-center">
+                    <u>Top Scores</u> 
+                </h2>
                 <div class="top-scores"></div>
             </div>
 
@@ -132,13 +135,12 @@ $(document).ready(function () {
         var storePoints = `player: ${initials} score: ${userPoints}`;
         scores.push(storePoints);
         localStorage.setItem('scores', JSON.stringify(scores));
-        console.log(scores);
         $('.myScore').find("input[id='initials']").val('');
         questionNum = -1;
         userPoints = 0;
         counter = 180;
         viewScores();
-        //clearInterval(intervalId);
+        
     }
     var myQuestions = [
         {

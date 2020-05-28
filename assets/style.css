@@ -5,9 +5,8 @@
     color: #ffffff;
     background-color:#2321bd;
 }
-.quiz-body {
-    background-color: #ecdac1
-}
-.question {
+
+.response {
     font-size: large;
+    font-weight: bold;
 }
